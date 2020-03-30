@@ -35,7 +35,7 @@ int main() {
 	dis[0] = 0;
 
 
-	bool *flag = new bool[n];
+	bool *flag = new bool[n+1];
 	priority_queue<edge>prq;
 	int ans = 0;
 

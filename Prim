@@ -54,7 +54,7 @@ int main() {
 			prq.pop();
 			continue;
 		}
-		cout <<less_value_edge.left<<' '<<less_value_edge.right<< less_value_edge.value<<endl;
+		cout <<less_value_edge.left<<' '<<less_value_edge.right<<' '<< less_value_edge.value<<endl;
 		ans += less_value_edge.value;
 		prq.pop();
 		u = flag[less_value_edge.left] == 1 ? less_value_edge.right : less_value_edge.left;//u是当前集合外的顶点，要将它放入集合中

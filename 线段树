@@ -1,0 +1,103 @@
+#################求区间和、做区间加减################
+#include "pch.h"
+#include <iostream>
+#include <cstdio>
+using namespace std;
+#define ll long long
+const int MAXN = 1000;
+
+ll ls(ll x) { return x << 1; }
+ll rs(ll x) { return x << 1 | 1; }
+
+class segmentTree {
+public:
+	ll *a;	//原始数组
+	ll n;
+	struct segmentList {
+		ll lazy;	//懒标记，对于一个父节点，只需设置lazy=dx，不用去管儿子，计算的时候用维护区间节点数*dx即可
+		ll sum;	//线段树每个节点存的数
+	}segmentNode[MAXN];
+
+	void push_up(ll x);
+	void push_down(ll x, ll l, ll r);
+	void buildSegmentTree(ll x, ll l, ll r);
+	void addRange(ll x, ll l, ll r, ll dx);
+	void updateSegmentTree(ll x, ll l, ll r, ll begin, ll end, ll dx);
+	ll query(ll x, ll l, ll r, ll ql, ll qr);
+	void printSegmentTree();
+};
+
+void segmentTree::printSegmentTree() {
+	for (ll i = 1; segmentNode[i].sum; ++i) {
+		cout << segmentNode[i].sum << "  ";
+		int c = (i + 1)&i;
+		if (c == 0)cout << endl;
+	}
+}
+
+void segmentTree::push_up(ll x) {	//从下向上更新，父节点收集来自儿子的总值
+	segmentNode[x].sum = segmentNode[ls(x)].sum + segmentNode[rs(x)].sum;
+}
+
+void segmentTree::buildSegmentTree(ll x, ll l, ll r) {	//建树，分治思想
+	if (l == r) {	//一旦是叶节点，就初始化为原本的值
+		segmentNode[x].sum = a[l];
+		return;
+	}
+	ll mid = (l + r) >> 1;
+	buildSegmentTree(ls(x), l, mid);
+	buildSegmentTree(rs(x), mid + 1, r);
+	push_up(x);	//当所有叶节点都初始化完成后，向上更新
+}
+
+void segmentTree::addRange(ll x, ll l, ll r, ll dx) {	//在节点x维护的区间[l,r]每个节点都+dx，节点lazy值和sum的处理
+	segmentNode[x].lazy += dx;
+	segmentNode[x].sum += dx * (r - l + 1);
+}
+
+void segmentTree::push_down(ll x, ll l, ll r) {		//向下传递父亲的lazy值
+	ll mid = (l + r) >> 1;
+	addRange(ls(x), l, mid, segmentNode[x].lazy);
+	addRange(rs(x), mid + 1, r, segmentNode[x].lazy);
+	//segmentNode[x].lazy = 0;
+}
+
+void segmentTree::updateSegmentTree(ll x, ll l, ll r, ll begin, ll end, ll dx) {	//从根节点向下更新线段树，返回区间的和
+	if (begin <= l && end >= r) {	//如果越界只需处理x维护的部分
+		segmentNode[x].lazy += dx;	//关于懒标记的传递：在update时lazy从根节点1开始往下传，只要[l,r]没被[begin,end]全部包含，就一直去分治
+		segmentNode[x].sum += dx * (r - l + 1);	//不是每个a[i]对应的segmentNode[x].sum都更新，如果能够全部包含就只改根，不用改每个节点了
+		return;
+	}
+	push_down(x, l, r);
+
+	ll mid = (l + r) >> 1;
+	if (begin <= mid)updateSegmentTree(ls(x), l, mid, begin, end, dx);
+	if (end > mid)updateSegmentTree(rs(x), mid + 1, r, begin, end, dx);
+	push_up(x);
+}
+	
+
+ll segmentTree::query(ll x, ll l, ll r, ll ql, ll qr) {		//查询，返回需要的结果
+	if (ql <= l && qr >= r)return segmentNode[x].sum;
+	ll result = 0;
+	ll mid = (l + r) >> 1;
+	push_down(x, l, r);	//这个push_down应该是为了没更新就查询的情况 
+	
+	if (ql <= mid)result += query(ls(x), l, mid, ql, qr);
+	if (qr > mid)result += query(rs(x),mid + 1, r, ql, qr);
+	return result;
+}
+
+int main() {
+	segmentTree st;
+	st.a = new ll[MAXN];
+	cin >> st.n;
+	for (ll i = 1; i <= st.n; ++i) {
+		st.a[i] = 1;
+	}
+	st.buildSegmentTree(1, 1, st.n);
+	st.updateSegmentTree(1,1,st.n,4,8,3); 
+	printf("sum from %d to %d:",4,8);
+	cout<<st.query(1, 1, st.n, 4,8)<<endl;
+	st.printSegmentTree();
+}

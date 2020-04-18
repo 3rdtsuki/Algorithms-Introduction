@@ -13,7 +13,9 @@ struct edge {
 	edge(){}
 	edge(int l, int r, int v) :left(l), right(r), value(v) {
 	}
-	friend bool operator<(const edge &e1, const edge &e2) {//注意：给优先队列重载大小于号时，参数必须是const T&/T，不能仅仅&T，
+	friend bool operator<(const edge &e1, const edge &e2) {
+		//为了让优先队列存储我们自己设计的类，必须重载小于号
+		//注意：给优先队列重载大小于号时，参数必须是const T&/T，不能仅仅&T，
 		//这是优先队列出于安全的考虑
 		return e1.value > e2.value;//要弹出最小值，需要将大于号重载为小于号
 	}

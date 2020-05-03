@@ -1,4 +1,7 @@
-//输入n*(开始时间、结束时间、价值)，输出最大不冲突和
+/*
+input：n个事件开始时间、结束时间、权重
+output：最大不相容集合，使得权重最大
+*/
 #include "pch.h"
 #include <iostream>
 #include <cstdio>
@@ -60,8 +63,8 @@ int main(){
 	int j=1;
 	for(int i=1;i<=n;++i){
 		while(y[j].end<=x[i].start){	//因为x是按开始时间排序，所以要用到的是x.start
-										//如果x[i].start>=y[j].end，那么y[j]可能是p[x[i]] 
-										//因为还不确定x[i]就是p[y[j]]，所以用一个while循环求出最终结果 
+						//如果x[i].start>=y[j].end，那么y[j]可能是p[x[i]] 
+						//因为还不确定x[i]就是p[y[j]]，所以用一个while循环求出最终结果 
 			p[x[i+1].id]=p[x[i].id]=y[j].id;//***只要x1<x2，那么p[x2]>=p[x1]，所以p[x2]初始化为p[x1]，避免出现p[x2]踏空的情况 
 			j++; //继续找更靠后的y[j] 
 		}
@@ -73,7 +76,7 @@ int main(){
 	
 	dp[0]=0;
 	for(int i=1;i<=n;++i){
-		dp[i]=max(dp[p[i]]+y[i].value,dp[i-1]);
+		dp[i]=max(dp[p[i]]+y[i].value,dp[i-1]);	//状态转移方程：要么加入事件j，要么不加入
 	}
 	cout<<"最大和："<<dp[n]<<endl;
 	cout<<"dp:"<<endl;

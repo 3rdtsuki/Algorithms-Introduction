@@ -1,24 +1,24 @@
-这道题是输入n个坐标，找到其中最近的两点距离
+/*这道题是输入n个坐标，找到其中最近的两点距离（的平方）
 最烦的就是映射的部分，先把点集按y排序，再把排序的编号结果y_rank对应上所有点，这里用id来标明起始每个点的序号
 注意一开始先不按x排序，通过vx[vy[i].id].y_rank=i加上y_rank属性，然后再按照x排序
-另外，自己写的cmp函数必须是全局的
-#include "pch.h"
+另外，自己写的cmp函数必须是全局的*/
+//#include "pch.h"
 #include <iostream>
 #include <cstdio>
 #include <set>
-#include<cmath>
-#include<typeinfo>
-#include<vector>
-#include<algorithm>
-#include<map>
+#include <cmath>
+#include <typeinfo>
+#include <vector>
+#include <algorithm>
+#include <map>
 using namespace std;
 #define ll long long
 #define MAXN 1000
 struct point{
-	float x,y;
+	double x,y;
 	int id;//总编号 
 	int y_rank;//分别按照x和y排序的编号 
-	point(float x,float y,int id):x(x),y(y),id(id){
+	point(double x,double y,int id):x(x),y(y),id(id){
 		y_rank=0;
 	}
 	
@@ -29,17 +29,18 @@ struct point{
 		}
 	}
 }; 
+vector<point>vx,vy;//如果函数参数带vector就会超时，所以还是设为全局变量 
 bool cmpx(point p1,point p2){
 	return p1.x<p2.x;
 }
 bool cmpy(point p1,point p2){
 	return p1.y<p2.y;
 }
-float get_distance(point p1,point p2){
-	return sqrt(pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2));
+double get_distance(point p1,point p2){
+	return (p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y);
 }
 
-float min_distance(vector<point>vx,vector<point>vy,int begin,int end){
+double min_distance(int begin,int end){
 	int len=end-begin+1;//划分块的长度 
 	if(len==1)return MAXN;//需要避免这种情况 
 	else if(len==2){		//最重要的就是边界条件，len=2时到底 
@@ -49,8 +50,9 @@ float min_distance(vector<point>vx,vector<point>vy,int begin,int end){
 	}
 	else{
 		int mid=(begin+end)>>1;
-		float mid_axis=(vx[mid].x+vx[mid+1].x)/2;//设置中轴线是中间两个点x的平均值 
-		float delta=min(min_distance(vx,vy,begin,mid),min_distance(vx,vy,mid,end));//******注意这里第二个递归必须从mid开始，否则会出现单独一个点划分的情况 
+		double mid_axis=(vx[mid].x+vx[mid+1].x)/2;//设置中轴线是中间两个点x的平均值 
+		double delta=min(min_distance(begin,mid),min_distance(mid,end));
+		//注意这里右边一定要从mid开始，否则会忽略横坐标为mid的点！！！ 
 		vector<int>gap;//存储窄缝中的点按y排序的序号 
 		for(int i=begin;i<=end;++i){//寻找在2delta区间内的点 
 			if(vx[i].x>=mid_axis-delta&&vx[i].x<=mid_axis+delta){//如果在窄缝中 
@@ -60,23 +62,22 @@ float min_distance(vector<point>vx,vector<point>vy,int begin,int end){
 			else if(vx[i].x>mid_axis+delta)break;//去掉后半部分多余，省点时间 
 		}
 		sort(gap.begin(),gap.end());
-		float minn=MAXN;
+		double minn=delta;
 		for(int i=0;i<gap.size();++i){
-			for(int j=i+1;j<=i+12&&j<gap.size();++j){
+			for(int j=i+1;j<=i+7&&j<gap.size();++j){
 				minn=min(minn,get_distance(vy[gap[i]],vy[gap[j]]));
 			}
 		}
 		//cout<<begin<<','<<end<<','<<minn<<endl;
-		return min(minn,delta);
+		return minn;
 	}
 }
 int main(){
 	int n;
 	cin>>n;
-	vector<point>vx,vy;
+	double x,y;
 	for(int i=0;i<n;++i){
-		float x,y;
-		cin>>x>>y;
+		scanf("%lf%lf",&x,&y);
 		point p(x,y,i);
 		vx.push_back(p);
 		vy.push_back(p);
@@ -86,7 +87,8 @@ int main(){
 		vx[vy[i].id].y_rank=i;//在vx中找到vy中的点，编号为y_rank 
 	}
 	sort(vx.begin(),vx.end(),cmpx);//注意最后再排序x，否则编号就乱了 
-	cout<<min_distance(vx,vy,0,n-1);
+	double d=min_distance(0,n-1);
+	printf("%.2lf",d);
 }
 
 /*
@@ -106,5 +108,5 @@ int main(){
 12.93 -92.71
 -27.71 -0.19
 73.17 32.17
-output:11.1881
+output:125.17
 */

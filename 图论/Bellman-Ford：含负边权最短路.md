@@ -23,7 +23,7 @@ signed main(){
     for(int i=1;i<=m;++i){
         cin>>e[i].a>>e[i].b>>e[i].w;
     }
-    for(int i=1;i<=n-1;++i){ //最短路肯定小于n条边，更新n-1次 
+    for(int i=1;i<=n-1;++i){ //每次循环是计算从s开始只通过i条边所能达到的最短长度，最多n-1次 
     	for(int j=1;j<=m;++j){
     		dis[e[j].b]=min(dis[e[j].b],dis[e[j].a]+e[j].w); //bellman-ford
     	}

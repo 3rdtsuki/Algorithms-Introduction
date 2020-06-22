@@ -1,3 +1,11 @@
+题目：https://www.luogu.com.cn/problem/P4779 
+数组实现邻接表参见：https://www.cnblogs.com/zsh2016/p/5760126.html 
+
+## 题目描述
+
+给定一个n个点，m条有向边的带非负权图，请你计算从s出发，到每个点的距离。
+
+```cpp
 #include<iostream>
 #include<queue>
 #include<cstdio>
@@ -75,5 +83,5 @@ output:
 path:
 0 1 2 2
 */
-//题目：https://www.luogu.com.cn/problem/P4779 
-//数组实现邻接表参见：https://www.cnblogs.com/zsh2016/p/5760126.html 
+```
+

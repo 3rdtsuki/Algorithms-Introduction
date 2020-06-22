@@ -54,7 +54,7 @@ void bfs(int start,int end){
 int main(){
 	cin>>n>>m;
     for(int i=1;i<=m;++i){
-        cin>>a>>b>>w;
+        cin>>a>>b>>w;//注意这里必须用w作为中介，因为输入map[a][b]时还不知道a,b的值
         map[a][b]=w;
     }
     bfs(4,3);

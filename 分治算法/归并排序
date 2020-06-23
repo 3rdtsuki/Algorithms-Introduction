@@ -1,0 +1,62 @@
+### 归并排序 Merge Sort
+
+注意sort函数里面要先递归再求解，因为归并中先求子问题才能保证整体的正确
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cstring>
+#include <stack>
+#include <queue>
+using namespace std;
+const int maxn = 2005;
+int n;
+void mergesort(int *a,int left,int right){
+	if(left>=right){	//终止条件！！！
+		return;
+	}
+	
+	int mid=(left+right)>>1;
+	mergesort(a,left,mid);	//先求子问题！！！
+	mergesort(a,mid+1,right);
+	
+	int i=left,j=mid+1;	//i,j相当于两个指针，有点像快排
+	int *t=new int [n+1];
+	int k=left;
+	while(i<=mid&&j<=right){
+		if(a[i]<=a[j]){
+			t[k++]=a[i++];
+		}
+		else{
+			t[k++]=a[j++];
+		}
+	}
+	while(i<=mid){	//收拾剩下的
+		t[k++]=a[i++];
+	}
+	while(j<=right){
+		t[k++]=a[j++];
+	}
+	for(int i=left;i<=right;++i){	//保存结果
+		a[i]=t[i];
+	}
+	
+}
+int main(){
+	cin>>n;
+	int *a=new int[n+1];
+	for(int i=0;i<n;++i){
+		cin>>a[i];
+	}
+	mergesort(a,0,n);
+	for(int i=1;i<=n;++i){
+		cout<<a[i]<<' ';
+	}
+}
+/*
+12
+1 5 4 8 10 2 6 9 12 11 3 7
+*/
+```
+

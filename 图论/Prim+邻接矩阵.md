@@ -1,3 +1,4 @@
+```cpp
 #include"pch.h"
 #include<iostream> 
 #include<vector>
@@ -87,3 +88,4 @@ int main() {
 5 6 6
 */
 //output:15
+```

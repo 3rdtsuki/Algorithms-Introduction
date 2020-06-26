@@ -6,6 +6,7 @@ https://www.luogu.com.cn/problem/P1177
 4 1 2 3 //a[i]=4  
 2 1 4 3  
 1 2 4 3  
+#### 顺便一提，如果TLE，方法一是将cin,cout改成scanf,printf；方法二是传参别传数组，数组作为全局变量。
 ```cpp
 #include <iostream>
 using namespace std;
